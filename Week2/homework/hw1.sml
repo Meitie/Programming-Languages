@@ -9,6 +9,7 @@ fun is_older ((year1 : int, month1 : int, day1 : int), (year2 : int, month2 : in
     then false
     else true
 
+(*  need to rework it  *)
 fun number_in_month (dates : (int * int * int) list, num_month : int) =
     if null dates
     then 0
@@ -20,7 +21,9 @@ fun number_in_month (dates : (int * int * int) list, num_month : int) =
                 else
                     if #2 (hd dates) = num_month
                         then
-                            count_tail(tl dates, counter + 1)
+                            if #2 (hd dates) <> num_month
+                            then counter
+                            else count_tail(tl dates, counter + 1)
                     else
                         count_tail(tl dates, counter)
         in
@@ -28,19 +31,20 @@ fun number_in_month (dates : (int * int * int) list, num_month : int) =
         end
 
 
-fun number_in_months (dates : (int * int * int) list, all_months : int list) =
-    if null dates orelse null all_months
+fun number_in_months (dates : (int * int * int) list, months : int list) =
+    if null dates orelse null months
     then 0
     else
         let
-            fun add_months (all_months : int list, counter : int) =
-                if null (tl all_months)
-                then counter + number_in_month(dates, hd all_months)
+            fun add_months (months : int list, counter : int) =
+                if null (tl months)
+                then counter + number_in_month(dates, hd months)
                 else
-                    add_months(tl all_months, (counter + number_in_month(dates, hd all_months)) )
+                    add_months(tl months, (counter + number_in_month(dates, hd months)) )
         in
-            add_months(all_months, 0)
+            add_months(months, 0)
         end
+
 
 fun dates_in_month (dates : (int * int * int) list, month : int) =
     if null dates
@@ -54,3 +58,17 @@ fun dates_in_month (dates : (int * int * int) list, month : int) =
             else 
             dates_in_month(tl dates, month)
 
+
+fun dates_in_months (dates : (int * int * int) list, months : int list) = 
+    if null dates orelse null months
+    then []
+    else 
+        if null (tl months)
+        then dates_in_month(dates, (hd months))
+        else
+            if #2 (hd dates) = (hd months)
+            then dates_in_month(dates, (hd months)) @ dates_in_months(tl dates, tl months)
+            else
+                dates_in_months(tl dates, tl months)
+            (* dates_in_months(dates, (tl months)) *)
+            
