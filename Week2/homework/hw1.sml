@@ -1,33 +1,39 @@
 fun is_older ((year1 : int, month1 : int, day1 : int), (year2 : int, month2 : int, day2 : int)) =
     if year1 > year2
-    then false
-    else if month1 > month2 andalso year1 > year2
-    then false
-    else if day1 > day2 andalso month1 > month2 andalso year1 > year2
-    then false
-    else if year1 = year2 andalso month1 = month2 andalso day1 = day2
-    then false
-    else true
+        then false
+    else 
+        if month1 > month2 andalso year1 > year2
+            then false
+        else   
+            if day1 > day2 andalso month1 > month2 andalso year1 > year2
+                then false
+            else 
+                if year1 = year2 andalso month1 = month2 andalso day1 = day2
+                    then false
+                else true
 
-(*  need to rework it  *)
+
 fun number_in_month (dates : (int * int * int) list, num_month : int) =
     if null dates
-    then 0
+        then 0
     else
-        let
-            fun count_tail (dates : (int * int * int) list, counter : int) =
-                if null (tl dates) andalso #2 (hd dates) <> num_month
-                    then counter
+        let 
+            fun total_months (dates : (int * int * int) list, num_month : int, count : int) =
+                if #2 (hd dates) = num_month andalso null (tl dates)
+                    then count + 1
                 else
-                    if #2 (hd dates) = num_month
-                        then
-                            if #2 (hd dates) <> num_month
-                            then counter
-                            else count_tail(tl dates, counter + 1)
+                    if #2 (hd dates) <> num_month
+                    then
+                        if null (tl dates)
+                        then 
+                            count
+                        else 
+                            total_months((tl dates), num_month, count)
                     else
-                        count_tail(tl dates, counter)
-        in
-            count_tail(dates, 0)
+                        total_months((tl dates), num_month, count + 1)
+                            
+        in             
+            total_months(dates, num_month, 0)
         end
 
 
@@ -63,12 +69,8 @@ fun dates_in_months (dates : (int * int * int) list, months : int list) =
     if null dates orelse null months
     then []
     else 
-        if null (tl months)
-        then dates_in_month(dates, (hd months))
-        else
-            if #2 (hd dates) = (hd months)
+        if #2 (hd dates) = (hd months)
             then dates_in_month(dates, (hd months)) @ dates_in_months(tl dates, tl months)
-            else
-                dates_in_months(tl dates, tl months)
-            (* dates_in_months(dates, (tl months)) *)
+        else
+            dates_in_months(tl dates, months)
             
