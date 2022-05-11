@@ -83,37 +83,28 @@ fun date_to_string (year_int : int, month_int : int, day_int : int) =
     end
 
 fun number_before_reaching_sum (sum : int, all_nums : int list ) = 
+    if null all_nums
+        then 0
+    else
     let
-        fun aditions (added : int, all_numbers : int list) = 
-            if sum <= (added + hd all_numbers + hd (tl all_numbers))
+        fun find_index (counter : int, added_sum : int ,all_numbers : int list) = 
+            if (added_sum + (hd all_numbers)) >= sum
             then 
-                (hd all_numbers)
+                counter
             else
-                aditions(added + hd all_numbers, (tl all_numbers))
+                find_index (counter + 1, (added_sum + hd all_numbers), tl all_numbers)
+                
     in
-        aditions(0, all_nums)
+        find_index(0, 0, all_nums)
     end
 
-
-(* fun number_before_reaching_sum(sum : int, numbers : int list) =
-    if null numbers
-    then 0
-    else
-	let
-	    fun get_number(total : int, no : int,  numbers : int list) =
-		if total >= sum
-		then no - 1
-		else
-		    get_number((total + hd numbers), no + 1, tl numbers)
-	in
-	    get_number(hd numbers, 1, tl numbers)
-	end; *)
-
-
-
 fun what_month(day : int) =
+    (* if the day given is not between 1->365, then return 0 as its not in a month *)
     let
 	    val all_days_in_months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     in
-	    1 + number_before_reaching_sum(day, all_days_in_months)
+        if day >=1 andalso day <= 365
+	        then number_before_reaching_sum(day, all_days_in_months) + 1
+        else 0
     end;
+
