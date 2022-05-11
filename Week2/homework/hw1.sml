@@ -12,6 +12,7 @@ fun is_older ((year1 : int, month1 : int, day1 : int), (year2 : int, month2 : in
                     then false
                 else true
 
+
 fun number_in_month (dates : (int * int * int) list, num_month : int) =
     if null dates
         then 0
@@ -34,6 +35,7 @@ fun number_in_month (dates : (int * int * int) list, num_month : int) =
             total_months(dates, num_month, 0)
         end
 
+
 fun number_in_months (dates : (int * int * int) list, months : int list) =
     if null dates orelse null months
     then 0
@@ -48,6 +50,7 @@ fun number_in_months (dates : (int * int * int) list, months : int list) =
             add_months(months, 0)
         end
 
+
 fun dates_in_month (dates : (int * int * int) list, month : int) =
     if null dates
     then []
@@ -59,6 +62,7 @@ fun dates_in_month (dates : (int * int * int) list, month : int) =
             then (hd dates) :: dates_in_month(tl dates, month)
             else 
             dates_in_month(tl dates, month)
+
 
 fun dates_in_months (dates : (int * int * int) list, months : int list) = 
     if null dates orelse null months
@@ -75,12 +79,14 @@ fun get_nth (list_of_strings : string list, position : int) =
         then (hd list_of_strings)
     else get_nth ((tl list_of_strings), position - 1)
 
+
 fun date_to_string (year_int : int, month_int : int, day_int : int) =
     let
         val all_the_months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
     in
         (get_nth(all_the_months, month_int)) ^ " " ^ (Int.toString day_int) ^ ", " ^ (Int.toString year_int)
     end
+
 
 fun number_before_reaching_sum (sum : int, all_nums : int list ) = 
     if null all_nums
@@ -98,7 +104,8 @@ fun number_before_reaching_sum (sum : int, all_nums : int list ) =
         find_index(0, 0, all_nums)
     end
 
-fun what_month(day : int) =
+
+fun what_month (day : int) =
     (* if the day given is not between 1->365, then return 0 as its not in a month *)
     let
 	    val all_days_in_months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -108,3 +115,18 @@ fun what_month(day : int) =
         else 0
     end;
 
+
+fun month_range (day_one : int, day_two : int) =
+    if day_one > day_two
+        then []
+    else
+        let 
+            fun list_of_months (dayx : int, all_months : int list) =
+                if dayx > day_two
+                then
+                    all_months
+                else
+                    list_of_months (dayx +1, all_months @ (what_month(dayx) :: []))
+        in 
+            list_of_months (day_one , [])
+        end
